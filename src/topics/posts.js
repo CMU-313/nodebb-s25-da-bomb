@@ -18,7 +18,7 @@ module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
 		await Topics.updateLastPostTime(postData.tid, postData.timestamp);
 		await Topics.addPostToTopic(postData.tid, postData);
-        postData.answered = false;
+		postData.answered = false;
 	};
 
 	Topics.getTopicPosts = async function (topicData, set, start, stop, uid, reverse) {
