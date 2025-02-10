@@ -120,8 +120,9 @@ module.exports = function (Topics) {
 		});
 
 		const blockedUids = await user.blocks.list(params.uid);
+		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);
 
-		let tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
+		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
 		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled', 'tags']))
 			.filter(t => t.scheduled || !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
