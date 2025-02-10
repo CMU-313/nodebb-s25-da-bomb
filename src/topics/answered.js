@@ -1,55 +1,28 @@
 'use strict';
 
-const topics = require('../topics');
 const plugins = require('../plugins');
 
-
 module.exports = function (Topics) {
-	Topics.markAsAnswered = async function (tids, uid) {
-		if (!Array.isArray(tids) || !tids.length) {
-			return false;
-		}
-
-		tids = _.uniq(tids).filter(tid => tid && utils.isNumber(tid));
-
-		if (!tids.length) {
-			return false;
-		}
-
+	Topics.markAsAnswered = async function (uid, tid) {
 		const topicData = await Topics.getTopicFields(tid, ['answered']);
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');
 		}
-
 		// function from ../data.js
 		await Topics.setTopicField(tid, 'answered', 1);
-		plugins.hooks.fire('action:topic.answered', { topic: _.clone(topicData), uid: uid });
-		return topicData;
-			
+		plugins.hooks.fire('action:topic.answered', { tid: tid, uid: uid });
+		return topicData;	
 	};
-
 	Topics.markAsUnanswered = async function (uid, tid) {
-		if (!Array.isArray(tids) || !tids.length) {
-			return false;
-		}
-
-		tids = _.uniq(tids).filter(tid => tid && utils.isNumber(tid));
-
-		if (!tids.length) {
-			return false;
-		}
-
 		const topicData = await Topics.getTopicFields(tid, ['answered']);
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');
 		}
 
 		await Topics.setTopicField(tid, 'answered', 0);
-		plugins.hooks.fire('action:topic.answered', { topic: _.clone(topicData), uid: uid });
-		return topicData;
-			
+		plugins.hooks.fire('action:topic.answered', { tid: tid, uid: uid });
+		return topicData;	
 	};
-
 	// based on getUnread functions from ../unread.js
 	Topics.getUnansweredTopics = async function (params) {
 		const unansweredTopics = {
@@ -75,12 +48,10 @@ module.exports = function (Topics) {
 		unansweredTopics.nextStart = params.stop + 1;
 		return unansweredTopics;
 	};
-
 	Topics.getUnAnsweredTids = async function (params) {
 			const results = await Topics.getAnsweredData(params);
 			return params.count ? results.counts : results.tids;
 	};
-	
 	Topics.getAnsweredData = async function (params) {
 		const uid = parseInt(params.uid, 10);
 
@@ -109,7 +80,6 @@ module.exports = function (Topics) {
 			filter: params.filter,
 			query: params.query || {},
 		});
-
 		return result;
 	};
 };
