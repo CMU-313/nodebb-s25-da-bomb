@@ -11,7 +11,7 @@ module.exports = function (Topics) {
 		// function from ../data.js
 		await Topics.setTopicField(tid, 'answered', 1);
 		plugins.hooks.fire('action:topic.answered', { tid: tid, uid: uid });
-		return topicData;	
+		return topicData;
 	};
 	Topics.markAsUnanswered = async function (uid, tid) {
 		const topicData = await Topics.getTopicFields(tid, ['answered']);
@@ -21,7 +21,7 @@ module.exports = function (Topics) {
 
 		await Topics.setTopicField(tid, 'answered', 0);
 		plugins.hooks.fire('action:topic.answered', { tid: tid, uid: uid });
-		return topicData;	
+		return topicData;
 	};
 	// based on getUnread functions from ../unread.js
 	Topics.getUnansweredTopics = async function (params) {
@@ -49,8 +49,8 @@ module.exports = function (Topics) {
 		return unansweredTopics;
 	};
 	Topics.getUnAnsweredTids = async function (params) {
-			const results = await Topics.getAnsweredData(params);
-			return params.count ? results.counts : results.tids;
+		const results = await Topics.getAnsweredData(params);
+		return params.count ? results.counts : results.tids;
 	};
 	Topics.getAnsweredData = async function (params) {
 		const uid = parseInt(params.uid, 10);
@@ -82,4 +82,104 @@ module.exports = function (Topics) {
 		});
 		return result;
 	};
+	// from unread.js
+	async function getTids(params) {
+		const counts = { '': 0, new: 0, watched: 0, unreplied: 0 };
+		const tidsByFilter = { '': [], new: [], watched: [], unreplied: [] };
+		const unreadCids = [];
+		if (params.uid <= 0) {
+			return { counts, tids: [], tidsByFilter, unreadCids };
+		}
+
+		params.cutoff = await Topics.unreadCutoff(params.uid);
+
+		const [followedTids, ignoredTids, categoryTids, userScores, tids_unread] = await Promise.all([
+			getFollowedTids(params),
+			user.getIgnoredTids(params.uid, 0, -1),
+			getCategoryTids(params),
+			db.getSortedSetRevRangeByScoreWithScores(`uid:${params.uid}:tids_read`, 0, -1, '+inf', params.cutoff),
+			db.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
+		]);
+
+		const userReadTimes = _.mapValues(_.keyBy(userScores, 'value'), 'score');
+		const isTopicsFollowed = {};
+		followedTids.forEach((t) => {
+			isTopicsFollowed[t.value] = true;
+		});
+		const unreadFollowed = await db.isSortedSetMembers(
+			`uid:${params.uid}:followed_tids`, tids_unread.map(t => t.value)
+		);
+
+		tids_unread.forEach((t, i) => {
+			isTopicsFollowed[t.value] = unreadFollowed[i];
+		});
+
+		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
+			.filter(t => !ignoredTids.includes(t.value) && (!userReadTimes[t.value] || t.score > userReadTimes[t.value]))
+			.concat(tids_unread.filter(t => !ignoredTids.includes(t.value)))
+			.sort((a, b) => b.score - a.score);
+
+		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);
+
+		if (!tids.length) {
+			return { counts, tids, tidsByFilter, unreadCids };
+		}
+
+		const blockedUids = await user.blocks.list(params.uid);
+
+		tids = await filterTidsThatHaveBlockedPosts({
+			uid: params.uid,
+			tids: tids,
+			blockedUids: blockedUids,
+			recentTids: categoryTids,
+		});
+
+		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
+		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled', 'tags']))
+			.filter(t => t.scheduled || !t.deleted);
+		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
+
+		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
+		const userCidState = _.zipObject(topicCids, categoryWatchState);
+
+		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		const filterTags = params.tag && params.tag.map(tag => String(tag));
+
+		topicData.forEach((topic) => {
+			if (topic && topic.cid &&
+				(!filterCids || filterCids.includes(topic.cid)) &&
+				(!filterTags || filterTags.every(tag => topic.tags.find(topicTag => topicTag.value === tag))) &&
+				!blockedUids.includes(topic.uid)) {
+				if (isTopicsFollowed[topic.tid] ||
+					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid])) {
+					tidsByFilter[''].push(topic.tid);
+					unreadCids.push(topic.cid);
+				}
+
+				if (isTopicsFollowed[topic.tid]) {
+					tidsByFilter.watched.push(topic.tid);
+				}
+
+				if (topic.postcount <= 1) {
+					tidsByFilter.unreplied.push(topic.tid);
+				}
+
+				if (!userReadTimes[topic.tid]) {
+					tidsByFilter.new.push(topic.tid);
+				}
+			}
+		});
+
+		counts[''] = tidsByFilter[''].length;
+		counts.watched = tidsByFilter.watched.length;
+		counts.unreplied = tidsByFilter.unreplied.length;
+		counts.new = tidsByFilter.new.length;
+
+		return {
+			counts: counts,
+			tids: tidsByFilter[params.filter],
+			tidsByFilter: tidsByFilter,
+			unreadCids: unreadCids,
+		};
+	}
 };
