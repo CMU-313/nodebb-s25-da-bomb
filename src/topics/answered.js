@@ -1,6 +1,6 @@
 'use strict';
 
-const topics = require.main.require('../topics');
+const topics = require('../topics');
 const plugins = require('../plugins');
 
 
