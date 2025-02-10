@@ -1,6 +1,13 @@
 'use strict';
 
+const _ = require('lodash');
+
+const db = require('../database');
+const user = require('../user');
+const categories = require('../categories');
+const privileges = require('../privileges');
 const plugins = require('../plugins');
+
 
 module.exports = function (Topics) {
 	Topics.markAsAnswered = async function (uid, tid) {
@@ -93,10 +100,8 @@ module.exports = function (Topics) {
 
 		params.cutoff = await Topics.unreadCutoff(params.uid);
 
-		const [followedTids, ignoredTids, categoryTids, userScores, tids_unread] = await Promise.all([
+		const [followedTids, userScores, tids_unread] = await Promise.all([
 			getFollowedTids(params),
-			user.getIgnoredTids(params.uid, 0, -1),
-			getCategoryTids(params),
 			db.getSortedSetRevRangeByScoreWithScores(`uid:${params.uid}:tids_read`, 0, -1, '+inf', params.cutoff),
 			db.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
 		]);
@@ -114,25 +119,7 @@ module.exports = function (Topics) {
 			isTopicsFollowed[t.value] = unreadFollowed[i];
 		});
 
-		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
-			.filter(t => !ignoredTids.includes(t.value) && (!userReadTimes[t.value] || t.score > userReadTimes[t.value]))
-			.concat(tids_unread.filter(t => !ignoredTids.includes(t.value)))
-			.sort((a, b) => b.score - a.score);
-
-		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);
-
-		if (!tids.length) {
-			return { counts, tids, tidsByFilter, unreadCids };
-		}
-
 		const blockedUids = await user.blocks.list(params.uid);
-
-		tids = await filterTidsThatHaveBlockedPosts({
-			uid: params.uid,
-			tids: tids,
-			blockedUids: blockedUids,
-			recentTids: categoryTids,
-		});
 
 		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
 		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled', 'tags']))
@@ -181,5 +168,14 @@ module.exports = function (Topics) {
 			tidsByFilter: tidsByFilter,
 			unreadCids: unreadCids,
 		};
+	}
+	async function getFollowedTids(params) {
+		const keys = params.cid ?
+			params.cid.map(cid => `cid:${cid}:tids:lastposttime`) :
+			'topics:recent';
+
+		const recentTopicData = await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		const isFollowed = await db.isSortedSetMembers(`uid:${params.uid}:followed_tids`, recentTopicData.map(t => t.tid));
+		return recentTopicData.filter((t, i) => isFollowed[i]);
 	}
 };
