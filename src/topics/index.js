@@ -33,6 +33,7 @@ require('./tools')(Topics);
 Topics.thumbs = require('./thumbs');
 require('./bookmarks')(Topics);
 require('./merge')(Topics);
+require('./answered')(Topics);
 Topics.events = require('./events');
 
 Topics.exists = async function (tids) {
