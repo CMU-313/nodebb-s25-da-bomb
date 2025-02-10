@@ -3,6 +3,7 @@
 const topics = require.main.require('../topics');
 const plugins = require('../plugins');
 
+
 module.exports = function (Topics) {
     Topics.markAsAnswered = async function (tids, uid) {
         if (!Array.isArray(tids) || !tids.length) {
@@ -20,6 +21,7 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-topic]]');
 		}
 
+        // function from ../data.js
         await Topics.setTopicField(tid, 'answered', 1);
 		plugins.hooks.fire('action:topic.answered', { topic: _.clone(topicData), uid: uid });
 		return topicData;
@@ -48,6 +50,7 @@ module.exports = function (Topics) {
             
     };
 
+    // based on getUnread functions from ../unread.js
     Topics.getUnansweredTopics = async function (params) {
 		const unansweredTopics = {
 			showSelect: true,
