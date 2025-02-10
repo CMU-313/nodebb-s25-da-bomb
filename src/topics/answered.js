@@ -119,6 +119,10 @@ module.exports = function (Topics) {
 			isTopicsFollowed[t.value] = unreadFollowed[i];
 		});
 
+		const unreadTopics = _.unionWith(categoryTids, followedTids, (a, b) => a.value === b.value)
+			.filter(t => !ignoredTids.includes(t.value) && (!userReadTimes[t.value] || t.score > userReadTimes[t.value]))
+			.concat(tids_unread.filter(t => !ignoredTids.includes(t.value)))
+			.sort((a, b) => b.score - a.score);
 		const blockedUids = await user.blocks.list(params.uid);
 		let tids = _.uniq(unreadTopics.map(topic => topic.value)).slice(0, 200);
 
