@@ -101,11 +101,9 @@ module.exports = function (User) {
 			return set;
 		}
 
-		const isPlain = typeof set[0] !== 'object';
 		const blocked_uids = await User.blocks.list(uid);
 		const blockedSet = new Set(blocked_uids);
 
-		
 		const data = await plugins.hooks.fire('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
 		return data.set;
