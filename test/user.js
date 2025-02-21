@@ -2555,7 +2555,7 @@ describe('User', () => {
 		});
 
 		describe('.filter()', () => {
-			it('should remove entries by blocked uids and return filtered set', (done) => {
+			it('should not remove entries by blocked uids and return filtered set', (done) => {
 				User.blocks.filter(1, [{
 					foo: 'foo',
 					uid: blockeeUid,
@@ -2568,8 +2568,17 @@ describe('User', () => {
 				}], (err, filtered) => {
 					assert.ifError(err);
 					assert.strictEqual(Array.isArray(filtered), true);
-					assert.strictEqual(filtered.length, 1);
-					assert.equal(filtered[0].uid, 1);
+					assert.strictEqual(filtered.length, 3);
+					assert.deepEqual(filtered, [{
+						foo: 'foo',
+						uid: blockeeUid,
+					}, {
+						foo: 'bar',
+						uid: 1,
+					}, {
+						foo: 'baz',
+						uid: blockeeUid,
+					}]);
 					done();
 				});
 			});
