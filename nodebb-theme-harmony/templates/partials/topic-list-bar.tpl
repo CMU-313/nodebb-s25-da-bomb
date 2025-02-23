@@ -1,13 +1,5 @@
 <div class="{{{ if config.theme.stickyToolbar }}}sticky-tools{{{ end }}} mb-3">
 	<nav class="topic-list-header d-flex flex-nowrap my-2 p-0 border-0 rounded">
-
-    <h1>PLEASE KILL ME</h1>
-    <!-- <form action="{config.relative_path}"> -->
-    <form action="/>
-        <input type="checkbox" id="unanswered" name="unanswered">
-        <label for="unanswered"> Unanswered Topics </label><br>
-    </form>
-    
 		<div class="d-flex flex-row p-2 text-bg-light gap-1 border rounded w-100 align-items-center">
 			<div component="category/controls" class="d-flex me-auto mb-0 gap-2 flex-wrap">
 				{{{ if template.category }}}
