@@ -2,6 +2,7 @@ body.template-topic {
 	.breadcrumb .breadcrumb-item:last-child {
 		display: none;
 	}
+
 	.topic {
 		.posts-container {
 			max-width: 960px;
@@ -9,6 +10,7 @@ body.template-topic {
 		}
 
 		.posts {
+
 			// fixes code blocks pushing content out on mobile
 			@include media-breakpoint-down(md) {
 				max-width: calc(100vw - $grid-gutter-width);
@@ -27,7 +29,7 @@ body.template-topic {
 				}
 			}
 
-			> [component="post"] > [component="post/footer"] {
+			>[component="post"]>[component="post/footer"] {
 				margin-left: calc($spacer * 2.5);
 			}
 
@@ -35,35 +37,44 @@ body.template-topic {
 				&.selected .post-container {
 					background-color: mix($body-bg, $body-color, 90%);
 				}
-				&.deleted .post-container .content { opacity: .65; }
+
+				&.deleted .post-container .content {
+					opacity: .65;
+				}
 
 				[component="post/content"] {
 					@include fix-lists();
 
-					> blockquote {
-						> blockquote {
-							> *:not(.blockquote) {
+					>blockquote {
+						>blockquote {
+							>*:not(.blockquote) {
 								display: none;
 							}
 						}
 
-						> blockquote.uncollapsed {
-							> *:not(.blockquote) {
+						>blockquote.uncollapsed {
+							>*:not(.blockquote) {
 								display: block;
 							}
 						}
 					}
 
 					@include media-breakpoint-up(lg) {
-						table { // text-break breaks table formatting
-						 	word-break:initial!important;
+						table {
+							// text-break breaks table formatting
+							word-break: initial !important;
 						}
 					}
 				}
 			}
 
-			[component="post/upvote"], [component="post/downvote"] {
-				&.upvoted, &.downvoted {
+			[component="post/upvote"],
+			[component="post/downvote"],
+			[component="post/goodquestion"] {
+
+				&.upvoted,
+				&.downvoted,
+				&.goodquestioned {
 					background-color: var(--btn-ghost-active-color);
 
 					&:hover {
@@ -98,8 +109,10 @@ body.template-topic {
 		[component="post"] {
 			padding-top: 0 !important;
 			padding-bottom: $spacer;
+
 			&:last-of-type {
 				padding-bottom: 0;
+
 				.post-footer {
 					border-bottom: none !important;
 				}
@@ -125,11 +138,13 @@ body.template-topic {
 						opacity: 1;
 					}
 				}
+
 				[component="post/actions"]:focus-within {
 					opacity: 1;
 				}
+
 				&:hover {
-					> .post-footer > [component="post/actions"] {
+					>.post-footer>[component="post/actions"] {
 						opacity: 1;
 					}
 				}

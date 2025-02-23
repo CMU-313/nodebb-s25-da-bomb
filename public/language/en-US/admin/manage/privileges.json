@@ -6,7 +6,7 @@
 	"group-privileges": "Group Privileges",
 	"user-privileges": "User Privileges",
 	"edit-privileges": "Edit Privileges",
-  	"select-clear-all": "Select/Clear All",
+	"select-clear-all": "Select/Clear All",
 	"chat": "Chat",
 	"chat-with-privileged": "Chat with Privileged",
 	"upload-images": "Upload Images",
@@ -37,6 +37,7 @@
 	"view-deleted": "View Deleted Posts",
 	"upvote-posts": "Upvote Posts",
 	"downvote-posts": "Downvote Posts",
+	"goodquestion-posts": "Mark as Good Question",
 	"delete-topics": "Delete Topics",
 	"purge": "Purge",
 	"moderate": "Moderate",
@@ -48,7 +49,6 @@
 	"admin-groups": "Groups",
 	"admin-tags": "Tags",
 	"admin-settings": "Settings",
-
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
 	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Please confirm your intention to save these privileges",
@@ -60,7 +60,7 @@
 	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>This action cannot be undone.</em>",
 	"alert.admin-warning": "Administrators implicitly get all privileges",
-  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
-  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
+	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }
