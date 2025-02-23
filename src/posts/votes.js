@@ -170,7 +170,7 @@ module.exports = function (Posts) {
 		return await markGoodQuestion('goodquestion', true, pid, uid, markStatus);
 	}
 
-	async function markGoodQuestion(type, unmark, pid, uid, markStatus) {
+	async function markGoodQuestion(type, unmark, pid, uid) {
 		uid = parseInt(uid, 10);
 		if (uid <= 0) {
 			throw new Error('[[error:not-logged-in]]');
