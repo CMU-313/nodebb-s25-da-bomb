@@ -116,6 +116,109 @@ module.exports = function (Posts) {
 		}
 	}
 
+	Posts.goodquestion = async function (pid, uid) {
+		const canMark = await privileges.posts.can('posts:goodquestion', pid, uid);
+		if (!canMark) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		if (voteInProgress(pid, uid)) {
+			throw new Error('[[error:already-marking-good-question]]');
+		}
+		putVoteInProgress(pid, uid);
+		try {
+			return await toggleGoodQuestion('goodquestion', pid, uid);
+		} finally {
+			clearVoteProgress(pid, uid);
+		}
+	};
+
+	Posts.ungoodquestion = async function (pid, uid) {
+		if (voteInProgress(pid, uid)) {
+			throw new Error('[[error:already-marking-good-question]]');
+		}
+		putVoteInProgress(pid, uid);
+		try {
+			const markStatus = await Posts.hasMarkedGood(pid, uid);
+			return await unmarkGoodQuestion(pid, uid, 'ungoodquestion', markStatus);
+		} finally {
+			clearVoteProgress(pid, uid);
+		}
+	};
+
+	Posts.hasMarkedGood = async function (pid, uid) {
+		if (parseInt(uid, 10) <= 0) {
+			return { goodquestion: false };
+		}
+		const hasMarked = await db.isMemberOfSet(`pid:${pid}:goodquestion`, uid);
+		return { goodquestion: hasMarked };
+	};
+
+	async function toggleGoodQuestion(type, pid, uid) {
+		const markStatus = await Posts.hasMarkedGood(pid, uid);
+		await unmarkGoodQuestion(pid, uid, type, markStatus);
+		return await markGoodQuestion(type, false, pid, uid, markStatus);
+	}
+
+	async function unmarkGoodQuestion(pid, uid, type, markStatus) {
+		const owner = await Posts.getPostField(pid, 'uid');
+		if (parseInt(uid, 10) === parseInt(owner, 10)) {
+			throw new Error('[[error:self-marking-good-question]]');
+		}
+		if (!markStatus || !markStatus.goodquestion) {
+			return;
+		}
+		return await markGoodQuestion('goodquestion', true, pid, uid, markStatus);
+	}
+
+	async function markGoodQuestion(type, unmark, pid, uid, markStatus) {
+		uid = parseInt(uid, 10);
+		if (uid <= 0) {
+			throw new Error('[[error:not-logged-in]]');
+		}
+		const now = Date.now();
+
+		if (type === 'goodquestion' && !unmark) {
+			await db.sortedSetAdd(`uid:${uid}:goodquestion`, now, pid);
+		} else {
+			await db.sortedSetRemove(`uid:${uid}:goodquestion`, pid);
+		}
+
+		if (!unmark) {
+			await db.setAdd(`pid:${pid}:goodquestion`, uid);
+		} else {
+			await db.setRemove(`pid:${pid}:goodquestion`, uid);
+		}
+
+		const postData = await Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
+		const goodCount = await db.setCount(`pid:${pid}:goodquestion`);
+		postData.goodquestions = goodCount;
+		await Posts.updatePostGoodQuestionCount(postData);
+
+		plugins.hooks.fire('action:post.goodquestion', {
+			pid: postData.pid,
+			uid: uid,
+			owner: postData.uid,
+			goodquestion: type === 'goodquestion' && !unmark,
+		});
+
+		return {
+			user: {},
+			fromuid: uid,
+			post: postData,
+			goodquestion: type === 'goodquestion' && !unmark,
+		};
+	}
+
+	Posts.updatePostGoodQuestionCount = async function (postData) {
+		if (!postData || !postData.pid || !postData.tid) {
+			return;
+		}
+		await Posts.setPostFields(postData.pid, {
+			goodquestions: postData.goodquestions,
+		});
+		plugins.hooks.fire('action:post.updatePostGoodQuestionCount', { post: postData });
+	};
+
 	async function toggleVote(type, pid, uid) {
 		const voteStatus = await Posts.hasVoted(pid, uid);
 		await unvote(pid, uid, type, voteStatus);

@@ -19,7 +19,7 @@ privsTopics.get = async function (tid, uid) {
 	const privs = [
 		'topics:reply', 'topics:read', 'topics:schedule', 'topics:tag',
 		'topics:delete', 'posts:edit', 'posts:history',
-		'posts:upvote', 'posts:downvote',
+		'posts:upvote', 'posts:downvote', 'posts:goodquestion',
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
@@ -118,7 +118,7 @@ privsTopics.filterUids = async function (privilege, tid, uids) {
 	}
 
 	return uids.filter((uid, index) => !disabled &&
-			((allowedTo[index] && (topicData.scheduled || !topicData.deleted)) || isAdmins[index]));
+		((allowedTo[index] && (topicData.scheduled || !topicData.deleted)) || isAdmins[index]));
 };
 
 privsTopics.canPurge = async function (tid, uid) {
