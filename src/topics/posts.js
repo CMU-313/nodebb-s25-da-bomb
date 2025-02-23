@@ -136,7 +136,6 @@ module.exports = function (Topics) {
 				postObj.bookmarked = bookmarks[i];
 				postObj.upvoted = voteData.upvotes[i];
 				postObj.downvoted = voteData.downvotes[i];
-				postObj.goodquestioned = voteData.goodquestions ? voteData.goodquestions[i] : false;
 				postObj.votes = postObj.votes || 0;
 				postObj.replies = replies[i];
 				postObj.selfPost = parseInt(uid, 10) > 0 && parseInt(uid, 10) === postObj.uid;

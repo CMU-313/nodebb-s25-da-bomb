@@ -137,10 +137,6 @@ define('forum/topic/postTools', [
 			return votes.toggleVote($(this), '.downvoted', -1);
 		});
 
-		postContainer.on('click', '[component="post/goodquestion"]', function () {
-			return votes.toggleGoodQuestion($(this), '.goodquestioned', 1);
-		});
-
 		postContainer.on('click', '[component="post/vote-count"]', function () {
 			votes.showVotes(getData($(this), 'data-pid'));
 		});

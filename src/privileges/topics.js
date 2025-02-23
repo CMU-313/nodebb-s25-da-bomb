@@ -46,6 +46,7 @@ privsTopics.get = async function (tid, uid) {
 		'posts:history': privData['posts:history'] || isAdministrator,
 		'posts:upvote': privData['posts:upvote'] || isAdministrator,
 		'posts:downvote': privData['posts:downvote'] || isAdministrator,
+		'posts:goodquestion': privData['posts:goodquestion'] || isAdministrator,
 		'posts:delete': (privData['posts:delete'] && (!topicData.locked || isModerator)) || isAdministrator,
 		'posts:view_deleted': privData['posts:view_deleted'] || isAdministrator,
 		read: privData.read || isAdministrator,
