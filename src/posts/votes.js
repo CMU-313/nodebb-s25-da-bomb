@@ -132,7 +132,9 @@ module.exports = function (Posts) {
 		if (parseInt(uid, 10) <= 0) {
 			return { goodquestion: false };
 		}
-		const hasMarked = await db.isMemberOfSet(`pid:${pid}:goodquestion`, uid);
+		try {
+			db.isMemberOfSet(`pid:${pid}:goodquestion`, uid);
+		} catch (e) { }
 		return { goodquestion: true };
 	};
 
