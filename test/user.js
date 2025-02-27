@@ -2596,8 +2596,8 @@ describe('User', () => {
 				}], (err, filtered) => {
 					assert.ifError(err);
 					assert.strictEqual(Array.isArray(filtered), true);
-					assert.strictEqual(filtered.length, 1);
-					assert.equal(filtered[0].fromuid, 1);
+					assert.strictEqual(filtered.length, 3);
+					assert.equal(filtered[0].fromuid, blockeeUid);
 					done();
 				});
 			});
