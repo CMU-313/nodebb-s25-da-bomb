@@ -149,7 +149,7 @@ describe('Search', () => {
 			description: 'Test category created by testing script',
 		});
 		await categories.create({
-			name: 'baz category', 
+			name: 'baz category',
 			description: 'Test category created by testing script',
 		});
 		const result = await search.search({
@@ -295,7 +295,7 @@ describe('Search', () => {
 		});
 
 		const topic4Data = await topics.post({
-			uid: aliceUid, 
+			uid: aliceUid,
 			cid: newCategory2,
 			title: 'another unique topic',
 			content: 'kiwi strawberry banana test',
@@ -319,7 +319,7 @@ describe('Search', () => {
 		// Search across multiple categories
 		const result2 = await search.search({
 			query: 'banana',
-			searchIn: 'titlesposts', 
+			searchIn: 'titlesposts',
 			categories: [newCategory1, newCategory2],
 			sortBy: 'topic.timestamp',
 			sortDirection: 'desc',
