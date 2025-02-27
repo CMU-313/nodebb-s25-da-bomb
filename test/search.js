@@ -224,4 +224,39 @@ describe('Search', () => {
 		assert.strictEqual(response.statusCode, 200);
 		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
+
+	it('should perform a global search using the plugin', async () => {
+		const qs = '/api/search?term=plugin&in=titlesposts';
+		await privileges.global.give(['groups:search:content'], 'guests');
+
+		const { body } = await request.get(nconf.get('url') + qs);
+		assert(body);
+		assert(body.matchCount > 0);
+		assert(body.posts.length > 0);
+
+		await privileges.global.rescind(['groups:search:content'], 'guests');
+	});
+
+	it('should search within a specific category using the search bar', async () => {
+		const qs = `/api/search?term=avocado&in=titlesposts&categories[]=${cid1}&showAs=posts`;
+		await privileges.global.give(['groups:search:content'], 'guests');
+
+		const { body } = await request.get(nconf.get('url') + qs);
+		assert(body);
+		assert.equal(body.matchCount, 1);
+		assert.equal(body.posts[0].cid, cid1);
+
+		await privileges.global.rescind(['groups:search:content'], 'guests');
+	});
+
+	it('should search within a category and its child categories', async () => {
+		const result = await search.search({
+			query: 'carrot',
+			searchIn: 'titlesposts',
+			categories: [cid2],
+			searchChildren: true,
+		});
+		assert(result.posts.length > 0);
+		assert(result.posts.some(post => post.cid === cid3));
+	});
 });
