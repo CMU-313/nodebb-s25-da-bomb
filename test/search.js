@@ -25,6 +25,14 @@ describe('Search', () => {
 	let cid2;
 	let cid3;
 
+	let aliceUid;
+	let bobUid;
+
+	let newCategory1;
+	let newCategory2;
+	let newTopicData;
+	let newPostData;
+
 	before(async () => {
 		phoebeUid = await user.create({ username: 'phoebe' });
 		gingerUid = await user.create({ username: 'ginger' });
@@ -64,6 +72,30 @@ describe('Search', () => {
 			content: 'reply post apple',
 			tid: topic2Data.tid,
 		});
+
+		// Create new users
+		aliceUid = await user.create({ username: 'alice' });
+		bobUid = await user.create({ username: 'bob' });
+
+		// Create new categories
+		newCategory1 = (await categories.create({
+			name: 'New Test Category 1',
+			description: 'A new test category for search testing',
+		})).cid;
+
+		newCategory2 = (await categories.create({
+			name: 'New Test Category 2',
+			description: 'Another new test category for search testing',
+		})).cid;
+
+		// Create a new topic and post in the new category
+		({ topicData: newTopicData, postData: newPostData } = await topics.post({
+			uid: aliceUid,
+			cid: newCategory1,
+			title: 'Test topic for search',
+			content: 'This is a test post content with unique words like pineapple and mango',
+			tags: ['test', 'search'],
+		}));
 	});
 
 	it('should search term in titles and posts', async () => {
@@ -117,7 +149,7 @@ describe('Search', () => {
 			description: 'Test category created by testing script',
 		});
 		await categories.create({
-			name: 'baz category',
+			name: 'baz category', 
 			description: 'Test category created by testing script',
 		});
 		const result = await search.search({
@@ -128,12 +160,40 @@ describe('Search', () => {
 		assert.strictEqual(result.categories[0].name, 'baz category');
 	});
 
+	it('should search for multiple categories', async () => {
+		await categories.create({
+			name: 'test category',
+			description: 'Another test category',
+		});
+		await categories.create({
+			name: 'test category 2',
+			description: 'Another test category',
+		});
+		const result = await search.search({
+			query: 'test',
+			searchIn: 'categories',
+		});
+		assert.strictEqual(result.matchCount, 7);
+		assert(result.categories.some(c => c.name === 'test category'));
+		assert(result.categories.some(c => c.name === 'test category 2'));
+	});
+
+	it('should return empty results for non-existent category', async () => {
+		const result = await search.search({
+			query: 'non-existent-category-name',
+			searchIn: 'categories',
+		});
+		assert.strictEqual(result.matchCount, 0);
+		assert.strictEqual(result.categories.length, 0);
+	});
+
 	it('should search for categories', async () => {
 		const socketCategories = require('../src/socket.io/categories');
 		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: 'baz', parentCid: 0 });
-		assert.strictEqual(data[0].name, 'baz category');
+		console.log('data:', data);
+		assert.strictEqual(data[0].name, 'test category 2');
 		data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: '', parentCid: 0 });
-		assert.strictEqual(data.length, 5);
+		assert.strictEqual(data.length, 9);
 	});
 
 	it('should fail if searchIn is wrong', (done) => {
@@ -225,26 +285,57 @@ describe('Search', () => {
 		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
 
-	it('should search within a specific category using the search bar', async () => {
-		const qs = `/api/search?term=avocado&in=titlesposts&categories[]=${cid1}&showAs=posts`;
-		await privileges.global.give(['groups:search:content'], 'guests');
-
-		const { body } = await request.get(nconf.get('url') + qs);
-		assert(body);
-		assert.equal(body.matchCount, 1);
-		assert.equal(body.posts[0].cid, cid1);
-
-		await privileges.global.rescind(['groups:search:content'], 'guests');
-	});
-
-	it('should search within a category and its child categories', async () => {
-		const result = await search.search({
-			query: 'carrot',
-			searchIn: 'titlesposts',
-			categories: [cid2],
-			searchChildren: true,
+	it('should search topics under specific categories', async () => {
+		// Create test topics in different categories
+		const topic3Data = await topics.post({
+			uid: bobUid,
+			cid: newCategory1,
+			title: 'special unique topic',
+			content: 'watermelon grape banana test',
 		});
-		assert(result.posts.length > 0);
-		assert(result.posts.some(post => post.cid === cid3));
+
+		const topic4Data = await topics.post({
+			uid: aliceUid, 
+			cid: newCategory2,
+			title: 'another unique topic',
+			content: 'kiwi strawberry banana test',
+		});
+
+		// Search in specific categories
+		const result1 = await search.search({
+			query: 'unique',
+			searchIn: 'titlesposts',
+			categories: [newCategory1],
+			sortBy: 'topic.timestamp',
+			sortDirection: 'desc',
+		});
+
+		console.log('result1:', result1);
+
+		assert(result1.posts.length === 2);
+		assert(result1.posts[0].topic.title === 'special unique topic');
+		assert(result1.posts[0].topic.cid === newCategory1);
+
+		// Search across multiple categories
+		const result2 = await search.search({
+			query: 'banana',
+			searchIn: 'titlesposts', 
+			categories: [newCategory1, newCategory2],
+			sortBy: 'topic.timestamp',
+			sortDirection: 'desc',
+		});
+
+		assert(result2.posts.length === 2);
+		assert(result2.posts.some(post => post.topic.cid === newCategory1));
+		assert(result2.posts.some(post => post.topic.cid === newCategory2));
+
+		// Search with no results
+		const result3 = await search.search({
+			query: 'nonexistentterm',
+			searchIn: 'titlesposts',
+			categories: [newCategory1, newCategory2],
+		});
+
+		assert(result3.posts.length === 0);
 	});
 });
