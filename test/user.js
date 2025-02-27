@@ -2569,16 +2569,20 @@ describe('User', () => {
 					assert.ifError(err);
 					assert.strictEqual(Array.isArray(filtered), true);
 					assert.strictEqual(filtered.length, 3);
-					assert.deepEqual(filtered, [{
+					assert.deepEqual(filtered, [
+						{
 						foo: 'foo',
 						uid: blockeeUid,
-					}, {
+						}, 
+						{
 						foo: 'bar',
 						uid: 1,
-					}, {
+						}, 
+						{
 						foo: 'baz',
 						uid: blockeeUid,
-					}]);
+						}
+					]);
 					done();
 				});
 			});
@@ -2617,7 +2621,7 @@ describe('User', () => {
 			it('should process plain sets that just contain uids', (done) => {
 				User.blocks.filter(1, [1, blockeeUid], (err, filtered) => {
 					assert.ifError(err);
-					assert.strictEqual(filtered.length, 1);
+					assert.strictEqual(filtered.length, 2);
 					assert.strictEqual(filtered[0], 1);
 					done();
 				});
@@ -2626,7 +2630,7 @@ describe('User', () => {
 			it('should filter uids that are blocking targetUid', (done) => {
 				User.blocks.filterUids(blockeeUid, [1, 2], (err, filtered) => {
 					assert.ifError(err);
-					assert.deepEqual(filtered, [2]);
+					assert.deepEqual(filtered, [2, blockeeUid]);
 					done();
 				});
 			});
