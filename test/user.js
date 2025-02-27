@@ -2571,17 +2571,17 @@ describe('User', () => {
 					assert.strictEqual(filtered.length, 3);
 					assert.deepEqual(filtered, [
 						{
-						foo: 'foo',
-						uid: blockeeUid,
-						}, 
+							foo: 'foo',
+							uid: blockeeUid,
+						},
 						{
-						foo: 'bar',
-						uid: 1,
-						}, 
+							foo: 'bar',
+							uid: 1,
+						},
 						{
-						foo: 'baz',
-						uid: blockeeUid,
-						}
+							foo: 'baz',
+							uid: blockeeUid,
+						},
 					]);
 					done();
 				});
