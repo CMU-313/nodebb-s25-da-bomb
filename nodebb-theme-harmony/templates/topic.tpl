@@ -21,11 +21,9 @@
 		{{{ if author.userslug }}}<meta itemprop="url" content="{config.relative_path}/user/{author.userslug}">{{{ end }}}
 	</div>
 
-
 	<div class="d-flex flex-column gap-3">
 		<div class="d-flex flex-wrap">
 			<div class="d-flex flex-column gap-3 flex-grow-1">
-				<!-- <h1 component="post/header" class="tracking-tight fw-semibold fs-3 mb-0 text-break {{{ if config.theme.centerHeaderElements }}}text-center{{{ end }}}"> -->
 				<h1 component="post/header" class="tracking-tight fw-semibold fs-3 mb-0 text-break d-flex justify-content-between align-items-center">
 					<span class="topic-title" component="topic/title">{title}</span>
 					<div class="search">
@@ -37,7 +35,6 @@
 						</div>
 					</div>
 				</h1>
-
 
 				<div class="topic-info d-flex gap-2 align-items-center flex-wrap {{{ if config.theme.centerHeaderElements }}}justify-content-center{{{ end }}}">
 					<span component="topic/labels" class="d-flex gap-2 {{{ if (!scheduled && (!pinned && (!locked && (!oldCid && !icons.length)))) }}}hidden{{{ end }}}">
