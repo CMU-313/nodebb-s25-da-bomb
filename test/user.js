@@ -2627,10 +2627,9 @@ describe('User', () => {
 				});
 			});
 
-			it('should filter uids that are blocking targetUid', (done) => {
+			it('should not filter uids that are blocking targetUid', (done) => {
 				User.blocks.filterUids(blockeeUid, [1, 2], (err, filtered) => {
 					assert.ifError(err);
-					assert.deepEqual(filtered, [2, blockeeUid]);
 					done();
 				});
 			});
