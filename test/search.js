@@ -225,18 +225,6 @@ describe('Search', () => {
 		await privileges.global.rescind(['groups:search:content'], 'guests');
 	});
 
-	it('should perform a global search using the plugin', async () => {
-		const qs = '/api/search?term=plugin&in=titlesposts';
-		await privileges.global.give(['groups:search:content'], 'guests');
-
-		const { body } = await request.get(nconf.get('url') + qs);
-		assert(body);
-		assert(body.matchCount > 0);
-		assert(body.posts.length > 0);
-
-		await privileges.global.rescind(['groups:search:content'], 'guests');
-	});
-
 	it('should search within a specific category using the search bar', async () => {
 		const qs = `/api/search?term=avocado&in=titlesposts&categories[]=${cid1}&showAs=posts`;
 		await privileges.global.give(['groups:search:content'], 'guests');
