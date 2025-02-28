@@ -24,9 +24,6 @@ searchController.search = async function (req, res, next) {
 		return next();
 	}
 
-	console.log('searchController.search');
-	console.log(req.query);
-
 	// Map source parameter to category IDs:
 	// Announcements -> 1
 	// General -> 2
@@ -44,8 +41,6 @@ searchController.search = async function (req, res, next) {
 	} else if (req.query.source === 'Blogs') {
 		searchCategories = ['3'];
 	}
-
-	console.log('searchCategories', searchCategories);
 
 	const page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 
