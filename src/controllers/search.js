@@ -29,7 +29,7 @@ searchController.search = async function (req, res, next) {
 
 	// Map source parameter to category IDs:
 	// Announcements -> 1
-	// General -> 2 
+	// General -> 2
 	// Blogs -> 3
 	// Comments -> 4
 	let searchCategories;
