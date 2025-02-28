@@ -103,6 +103,11 @@
 				<i class="fa fa-fw fa-chevron-up text-primary"></i>
 			</a>
 
+			<!-- New Good Question Button -->
+			<a component="post/goodquestion" href="#" class="btn-ghost-sm{{{ if posts.goodquestioned }}} goodquestion {{{ end }}}" title="[[topic:good-question]]">
+				<i class="fa fa-fw fa-check text-success"></i>
+			</a>
+
 			<meta itemprop="upvoteCount" content="{posts.upvotes}">
 			<meta itemprop="downvoteCount" content="{posts.downvotes}">
 			<a href="#" class="px-2 mx-1 btn-ghost-sm" component="post/vote-count" data-votes="{posts.votes}" title="[[global:voters]]">{posts.votes}</a>

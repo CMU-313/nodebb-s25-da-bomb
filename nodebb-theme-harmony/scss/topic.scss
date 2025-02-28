@@ -56,14 +56,18 @@ body.template-topic {
 
 					@include media-breakpoint-up(lg) {
 						table { // text-break breaks table formatting
-						 	word-break:initial!important;
+							word-break:initial!important;
 						}
 					}
 				}
 			}
 
-			[component="post/upvote"], [component="post/downvote"] {
-				&.upvoted, &.downvoted {
+			[component="post/upvote"],
+			[component="post/downvote"],
+			[component="post/goodquestion"] {
+				&.upvoted,
+				&.downvoted,
+				&.goodquestioned {
 					background-color: var(--btn-ghost-active-color);
 
 					&:hover {

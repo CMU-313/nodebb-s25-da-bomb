@@ -1,3 +1,12 @@
+## Da-Bomb Team Members ✨
+
+* **Arjun Walia** 🚀
+* **Bing Bhakdibhumi** 🌟
+* **Emma Enkhbold** 💫
+* **Jackson Ma** ⭐
+
+---
+
 # ![NodeBB](public/images/sm-card.png)
 
 [![Workflow](https://github.com/CMU-313/NodeBB/actions/workflows/test.yaml/badge.svg)](https://github.com/CMU-313/NodeBB/actions/workflows/test.yaml)
