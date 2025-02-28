@@ -22,6 +22,18 @@
 			</a>
 		</li>
 
+        <li>
+			<a component="topic/answered" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem">
+				<i class="fa fa-fw fa-tag text-secondary"></i> [[topic:thread-tools.answered]]
+			</a>
+		</li>
+		<li>
+			<a component="topic/unanswered" href="#" class="hidden dropdown-item rounded-1" role="menuitem">
+				<i class="fa fa-fw fa-tag text-secondary"></i> [[topic:thread-tools.unanswered]]
+			</a>
+		</li>
+
+
 		<li>
 			<a component="topic/lock" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem">
 				<i class="fa fa-fw fa-lock text-secondary"></i> [[topic:thread-tools.lock]]

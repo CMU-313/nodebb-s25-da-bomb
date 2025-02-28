@@ -62,6 +62,7 @@ module.exports = function (Categories) {
 			'groups:posts:delete',
 			'groups:posts:upvote',
 			'groups:posts:downvote',
+			'groups:posts:goodquestion',
 			'groups:topics:delete',
 		];
 		const modPrivileges = defaultPrivileges.concat([

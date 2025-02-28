@@ -15,7 +15,7 @@ module.exports = {
 				return callback(err);
 			}
 			async.eachSeries(cids, (cid, next) => {
-				privileges.categories.give(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users', next);
+				privileges.categories.give(['groups:posts:upvote', 'groups:posts:downvote', 'groups:posts:goodquestion'], cid, 'registered-users', next);
 			}, callback);
 		});
 	},

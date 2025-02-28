@@ -23,6 +23,25 @@ searchController.search = async function (req, res, next) {
 	if (!plugins.hooks.hasListeners('filter:search.query')) {
 		return next();
 	}
+
+	// Map source parameter to category IDs:
+	// Announcements -> 1
+	// General -> 2
+	// Blogs -> 3
+	// Comments -> 4
+	let searchCategories;
+	if (!req.query.source) {
+		searchCategories = req.query.categories;
+	} else if (req.query.source === 'Announcements') {
+		searchCategories = ['1'];
+	} else if (req.query.source === 'General') {
+		searchCategories = ['2'];
+	} else if (req.query.source === 'Comments') {
+		searchCategories = ['4'];
+	} else if (req.query.source === 'Blogs') {
+		searchCategories = ['3'];
+	}
+
 	const page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 
 	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
@@ -58,7 +77,7 @@ searchController.search = async function (req, res, next) {
 		searchIn: req.query.in,
 		matchWords: req.query.matchWords || 'all',
 		postedBy: req.query.by,
-		categories: req.query.categories,
+		categories: searchCategories,
 		searchChildren: req.query.searchChildren,
 		hasTags: req.query.hasTags,
 		replies: validator.escape(String(req.query.replies || '')),

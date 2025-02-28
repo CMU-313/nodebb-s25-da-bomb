@@ -22,6 +22,7 @@ module.exports = {
 			'posts:delete',
 			'posts:upvote',
 			'posts:downvote',
+			'posts:goodquestion',
 			'topics:delete',
 		];
 		const modPrivileges = defaultPrivileges.concat([

@@ -11,6 +11,7 @@
 		<a href="{config.relative_path}/user/{userslug}/upvoted" class="btn-ghost-sm ff-secondary fw-semibold {{{ if template.account/upvoted }}}active{{{ end }}}">[[global:upvoted]]</a>
 		{{{ if !downvote:disabled }}}
 		<a href="{config.relative_path}/user/{userslug}/downvoted" class="btn-ghost-sm ff-secondary fw-semibold {{{ if template.account/downvoted }}}active{{{ end }}}">[[global:downvoted]]</a>
+		<a href="{config.relative_path}/user/{userslug}/goodquestioned" class="btn-ghost-sm ff-secondary fw-semibold {{{ if template.account.goodquestioned }}}active{{{ end }}}">[[global:good-question]]</a>
 		{{{ end }}}
 		{{{ end }}}
 		{{{ end }}}
