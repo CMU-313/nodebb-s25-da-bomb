@@ -23,6 +23,19 @@
 			<span class="text-lowercase fw-normal">[[global:posts]]</span>
 		</span>
 	</div>
+	<div class="d-flex gap-3 align-items-center">
+		<h3 class="fw-semibold tracking-tight mb-0">Search Topics</h3>
+		<form action="{config.relative_path}/search" method="get" class="d-flex gap-2 flex-grow-1">
+			<input id="search-input" name="term" type="text" class="form-control fw-semibold py-2 ps-2 pe-3" id="search-input" placeholder="[[search:type-to-search]]">
+
+			<input type="hidden" name="source" value={./name}>
+			<input type="hidden" name="in" value="titlesposts">
+			<input type="hidden" name="matchWords" value="all">
+			<input type="hidden" name="showAs" value="posts">
+
+			<button type="submit" class="btn btn-primary fw-semibold py-2 px-3">[[global:search]]</button>
+		</form>
+	</div>
 </div>
 
 {{{ if widgets.header.length }}}

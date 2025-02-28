@@ -16,6 +16,10 @@
 </li>
 
 <li>
+	<a component="topic/answered" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-tag text-secondary"></i> [[topic:thread-tools.answered]]</a>
+</li>
+
+<li>
 	<a component="topic/move" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-arrows text-secondary"></i> [[topic:thread-tools.move]]</a>
 </li>
 

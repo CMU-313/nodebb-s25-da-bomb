@@ -116,6 +116,31 @@ module.exports = function (Posts) {
 		}
 	}
 
+	// Marks the specified post as a good question if the user has the required privileges and isn't already marking it.
+	Posts.goodquestion = async function (pid, uid) {
+		const canMark = await privileges.posts.can('posts:goodquestion', pid, uid);
+		if (!canMark) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		if (voteInProgress(pid, uid)) {
+			throw new Error('[[error:already-marking-good-question]]');
+		}
+		putVoteInProgress(pid, uid);
+		return { goodquestion: true };
+	};
+
+	// Checks if a user has already marked the specified post as a good question by
+	// verifying their membership in a corresponding database set.
+	Posts.hasMarkedGood = async function (pid, uid) {
+		if (parseInt(uid, 10) <= 0) {
+			return { goodquestion: false };
+		}
+		try {
+			db.isMemberOfSet(`pid:${pid}:goodquestion`, uid);
+		} catch (e) { }
+		return { goodquestion: true };
+	};
+
 	async function toggleVote(type, pid, uid) {
 		const voteStatus = await Posts.hasVoted(pid, uid);
 		await unvote(pid, uid, type, voteStatus);
