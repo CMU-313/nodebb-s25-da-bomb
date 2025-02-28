@@ -24,12 +24,12 @@
 
         <li>
 			<a component="topic/answered" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem">
-				<i class="fa fa-fw fa-thumb-tack text-secondary"></i> [[topic:thread-tools.answered]]
+				<i class="fa fa-fw fa-tag text-secondary"></i> [[topic:thread-tools.answered]]
 			</a>
 		</li>
 		<li>
 			<a component="topic/unanswered" href="#" class="hidden dropdown-item rounded-1" role="menuitem">
-				<i class="fa fa-fw fa-thumb-tack fa-rotate-90 text-secondary"></i> [[topic:thread-tools.unanswered]]
+				<i class="fa fa-fw fa-tag text-secondary"></i> [[topic:thread-tools.unanswered]]
 			</a>
 		</li>
 
