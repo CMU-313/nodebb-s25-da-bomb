@@ -27,6 +27,11 @@ searchController.search = async function (req, res, next) {
 	console.log('searchController.search');
 	console.log(req.query);
 
+	// Map source parameter to category IDs:
+	// Announcements -> 1
+	// General -> 2 
+	// Blogs -> 3
+	// Comments -> 4
 	let searchCategories;
 	if (!req.query.source) {
 		searchCategories = req.query.categories;
