@@ -116,6 +116,7 @@ module.exports = function (Posts) {
 		}
 	}
 
+	// Marks the specified post as a good question if the user has the required privileges and isn't already marking it.
 	Posts.goodquestion = async function (pid, uid) {
 		const canMark = await privileges.posts.can('posts:goodquestion', pid, uid);
 		if (!canMark) {
@@ -128,6 +129,7 @@ module.exports = function (Posts) {
 		return { goodquestion: true };
 	};
 
+	// Checks if a user has already marked the specified post as a good question by verifying their membership in a corresponding database set.
 	Posts.hasMarkedGood = async function (pid, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return { goodquestion: false };
