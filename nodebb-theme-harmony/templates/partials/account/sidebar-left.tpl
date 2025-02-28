@@ -9,6 +9,7 @@
 			{{{ if template.account/controversial }}}active{{{ end }}}
 			{{{ if template.account/upvoted }}}active{{{ end }}}
 			{{{ if template.account/downvoted }}}active{{{ end }}}
+			{{{ if template.account.goodquestioned }}}active{{{ end }}}
 			{{{ if template.account/bookmarks }}}active{{{ end }}}">
 			<div class="flex-grow-1">[[global:posts]]</div>
 			<span class="flex-shrink-0 text-xs" title="{counts.posts}">{humanReadableNumber(counts.posts)}</span>
