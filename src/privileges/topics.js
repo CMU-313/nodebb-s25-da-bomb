@@ -21,6 +21,7 @@ privsTopics.get = async function (tid, uid) {
 		'topics:delete', 'posts:edit', 'posts:history',
 		'posts:upvote', 'posts:downvote', 'posts:goodquestion',
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
+		'posts:answered', 'posts:unanswered',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
 	const [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
