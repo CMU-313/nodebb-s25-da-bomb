@@ -190,7 +190,6 @@ describe('Search', () => {
 	it('should search for categories', async () => {
 		const socketCategories = require('../src/socket.io/categories');
 		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: 'baz', parentCid: 0 });
-		console.log('data:', data);
 		assert.strictEqual(data[0].name, 'test category 2');
 		data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: '', parentCid: 0 });
 		assert.strictEqual(data.length, 9);
@@ -309,8 +308,6 @@ describe('Search', () => {
 			sortBy: 'topic.timestamp',
 			sortDirection: 'desc',
 		});
-
-		console.log('result1:', result1);
 
 		assert(result1.posts.length === 2);
 		assert(result1.posts[0].topic.title === 'special unique topic');
