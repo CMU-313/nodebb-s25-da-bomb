@@ -1,3 +1,18 @@
+User Guide for Search Replies by Keyword Feature
+
+Introduction
+This adds a placeholder search bar to discussion topics so that we can search 
+replies by keyword. It's placed in the same location as search bars on other pages 
+for consistency.
+
+How to Use the Feature
+Currently, this is only the front-end design so the search functionality cannot be 
+tested.
+
+Link/Description
+The file path is nodebb-theme-harmony/templates/topic.tpl and lines 29 - 36 create 
+and format the search bar.
+
 User Guide for Show Replies from Blocked Users
 
 Introduction
@@ -26,7 +41,8 @@ compiles without errors before the other tests in this file. I believe the tests
 are sufficient for covering the changes that I have made because it checks for the 
 presence of blocked uids, ensures the method works with a range of inputs, and 
 creates no errors.
-=======
+
+
 # User Guide for Marking Questions as "Good"
 
 In test/goodQuestion.js, you are able to run a test that checks that, when clicking the Green Check-Mark next to the upvote
@@ -117,5 +133,3 @@ For further assistance, please contact support or refer to the application's hel
 ## Conclusion
 
 The search functionality is a powerful tool for navigating and finding content within the application. By understanding and utilizing the available parameters and filters, you can efficiently locate the information you need.
-
-
