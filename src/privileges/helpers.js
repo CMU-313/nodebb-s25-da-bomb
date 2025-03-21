@@ -192,12 +192,12 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 	cids = Array.isArray(cids) ? cids : [cids];
 	for (const member of members) {
 		const groupKeys = [];
-		cids.forEach((cid) => {
-			privileges.forEach((privilege) => {
+		for (const cid of cids) {
+			for (const privilege of privileges) {
 				groupKeys.push(`cid:${cid}:privileges:${privilege}`);
-			});
-		});
-		/* eslint-disable no-await-in-loop */
+			}
+		}
+		// eslint-disable-next-line no-await-in-loop
 		await method(groupKeys, member);
 	}
 };

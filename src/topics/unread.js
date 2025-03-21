@@ -258,7 +258,8 @@ module.exports = function (Topics) {
 				return hasUnblockedUnread;
 			}
 			let postData = await posts.getPostsFields(pidsSinceLastVisit, ['pid', 'uid']);
-			postData = postData.filter(post => !params.blockedUids.includes(parseInt(post.uid, 10)));
+			const { blockedUids } = params;
+			postData = postData.filter(post => !blockedUids.includes(parseInt(post.uid, 10)));
 
 			done = postData.length > 0;
 			hasUnblockedUnread = postData.length > 0;
@@ -363,7 +364,7 @@ module.exports = function (Topics) {
 		const result = tids.map((tid, index) => {
 			const read = !tids_unread[index] &&
 				(topicScores[index] < cutoff ||
-				!!(userScores[index] && userScores[index] >= topicScores[index]));
+					!!(userScores[index] && userScores[index] >= topicScores[index]));
 			return { tid: tid, read: read, index: index };
 		});
 

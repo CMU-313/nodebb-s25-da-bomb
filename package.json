@@ -173,6 +173,14 @@
         "nyc": "15.1.0",
         "smtp-server": "3.13.4"
     },
+    "jshintConfig": {
+        "node": true,
+        "esversion": 9,
+        "strict": false,
+        "mocha": true,
+        "-W018": false,
+        "-W117": false
+    },
     "optionalDependencies": {
         "sass-embedded": "1.77.1"
     },
