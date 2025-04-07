@@ -135,6 +135,7 @@
         "socket.io-client": "4.7.5",
         "sortablejs": "1.15.2",
         "spdx-license-list": "6.9.0",
+        "standard": "^17.1.2",
         "terser-webpack-plugin": "5.3.10",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
@@ -164,6 +165,7 @@
         "grunt-contrib-watch": "1.1.0",
         "husky": "8.0.3",
         "jsdom": "24.0.0",
+        "jshint": "^2.13.6",
         "lint-staged": "15.2.2",
         "mocha": "10.4.0",
         "mocha-lcov-reporter": "1.3.0",
@@ -171,6 +173,14 @@
         "nyc": "15.1.0",
         "smtp-server": "3.13.4"
     },
+    "jshintConfig": {
+         "node": true,
+         "esversion": 9,
+         "strict": false,
+         "mocha": true,
+         "-W018": false,
+         "-W117": false
+     },
     "optionalDependencies": {
         "sass-embedded": "1.77.1"
     },
